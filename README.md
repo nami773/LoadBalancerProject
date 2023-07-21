@@ -1,10 +1,12 @@
+## About
+
 The objective of this project is to simulate a load balancer and compare the performance of three different load balancing strategies: RandMin, RoundRobin, and PureRand. The goal is to identify the most optimal strategy based on quantitative analysis of the results.
 
 Sample Output of this code:
 
 ![image](https://github.com/nami773/LoadBalancerProject/assets/128548019/b2b582af-01bc-4e26-ad7e-320539f00056)
 
-# Project Report
+## Project Report
 ![Project CSC446_Page_01](https://github.com/nami773/LoadBalancerProject/assets/128548019/449191fd-b443-429b-9d9f-8391b820ff9a)
 ![Project CSC446_Page_02](https://github.com/nami773/LoadBalancerProject/assets/128548019/6ff9599d-c60f-462f-8595-8c653e09c29a)
 ![Project CSC446_Page_03](https://github.com/nami773/LoadBalancerProject/assets/128548019/6accef31-c7fe-40d2-8bd6-220e6a245d7e)
