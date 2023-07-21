@@ -3,6 +3,7 @@ import math
 import RandMin
 import RoundRobin
 import PureRand
+from prettytable import PrettyTable
 
 # Parameters for different test cases
 m = 5  # number of servers available
@@ -31,16 +32,10 @@ for seed in seeds:
     arrival_times = np.cumsum(interarrival_times)
     service_times = [round(time*60) for time in np.random.exponential(scale=mu, size=customers)]
 
-    # print("arrival times: ", arrival_times)
-    # print("Interarrival times: ", sum(interarrival_times)/len(interarrival_times))
-    # print("service times:", service_times)
-    # print("Service times: ", sum(service_times)/len(service_times))
-
     rand_min = RandMin.RandMin(arrival_times, service_times, m, d, seed)
     pure_rand = PureRand.PureRand(arrival_times, service_times, m, seed)
     round_robin = RoundRobin.RoundRobin(arrival_times, service_times, m)
 
-    # result = {'arrival_times': arrival_times, 'service_times': service_times, 'wait_times': wait_times, 'system_times': system_times, 'departure_times': departure_times}
     wait_times, system_times, departure_times, selected, max_len, average_len = rand_min.run()
     average_system_len = (sum(system_times)/len(system_times))
     RM_max_queue.append(max_len)
@@ -60,34 +55,25 @@ for seed in seeds:
     RR_avg_service.append(average_system_len)
 
 print("RM:")
-print("max queue: ")
-for i in RM_max_queue:
-    print(i)
-print("avg queue: ")
-for i in RM_avg_queue:
-    print(i)
-print("avg service: ")
-for i in RM_avg_service:
-    print(i)
-print("++++++++++++++++++++++")
+x = PrettyTable()
+x.add_column("Seed", seeds)
+x.add_column("Max Queue Length", RM_max_queue)
+x.add_column("Average Queue Length", RM_avg_queue)
+x.add_column("Average Service Time", RM_avg_service)
+print(x)
+
 print("RR:")
-print("max queue: ")
-for i in RR_max_queue:
-    print(i)
-print("avg queue: ")
-for i in RR_avg_queue:
-    print(i)
-print("avg service: ")
-for i in RR_avg_service:
-    print(i)
-print("++++++++++++++++++++++")
+x = PrettyTable()
+x.add_column("Seed", seeds)
+x.add_column("Max Queue Length", RR_max_queue)
+x.add_column("Average Queue Length", RR_avg_queue)
+x.add_column("Average Service Time", RR_avg_service)
+print(x)
+
 print("PR:")
-print("max queue: ")
-for i in PR_max_queue:
-    print(i)
-print("avg queue: ")
-for i in PR_avg_queue:
-    print(i)
-print("avg service: ")
-for i in PR_avg_service:
-    print(i)
+x = PrettyTable()
+x.add_column("Seed", seeds)
+x.add_column("Max Queue Length", PR_max_queue)
+x.add_column("Average Queue Length", PR_avg_queue)
+x.add_column("Average Service Time", PR_avg_service)
+print(x)
