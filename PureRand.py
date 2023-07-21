@@ -3,10 +3,22 @@ import numpy as np
 
 
 class PureRand:
-    def __init__(self, arrival_times, service_times, m):
+    def __init__(self, arrival_times, service_times, m, seed):
         self.arrival_times = arrival_times
         self.service_times = service_times
         self.m = m
+        np.random.seed(seed)
+
+    def update_queues(self, queues, arrival_time, departure_times):
+        max_queue = 0
+        average_queue_len = 0
+        for queue in queues.values():
+            while len(queue) > 0 and arrival_time > departure_times[queue[0]]:
+                queue.pop(0)
+            max_queue = max(max_queue, len(queue))
+            average_queue_len += len(queue)
+        average_queue_len /= len(queues)
+        return max_queue, average_queue_len
 
     def run(self):
         #  Initialization
@@ -20,36 +32,35 @@ class PureRand:
 
         # Statistics to be collected
         wait_times = []
+        system_times = []
         departure_times = []
+        max_len = 0
+        average_len = 0
+        # List of customers stored for each server
         queues = {i: [] for i in range(m)}
 
         for i in range(size):
-            # Arrival time
             arrival_time = arrival_times[i]
-            # Service time
             service_time = service_times[i]
-            # Server chosen
             server = selected[i]
-            # Queue to enter
             queue = queues[server]
+            max_temp, average_temp = self.update_queues(queues, arrival_time, departure_times)
+            max_len = max(max_len, max_temp)
+            average_len += average_temp
 
-            # Wait time
-            if i == 0:
+            if i == 0 or len(queue) == 0:
                 wait_time = 0
             else:
-                wait_time = max(0, departure_times[i - 1][server] - arrival_time)
+                prev = queue[-1]
+                wait_time = max(0, departure_times[prev] - arrival_time)
 
-            # Departure time
             departure_time = arrival_time + wait_time + service_time
-
-            # Queue length
-            if i == 0:
-                queue_length = 0
-            else:
-                queue_length = queue_lengths[i - 1][server] + wait_time
+            system_time = departure_time - arrival_time
 
             # Update statistics
             wait_times.append(wait_time)
-            departure_times.append([departure_time] * m)
-            queue_lengths.append([queue_length] * m)
- 
+            departure_times.append(departure_time)
+            system_times.append(system_time)
+            queues[server].append(i)
+        average_len /= size
+        return wait_times, system_times, departure_times, selected, max_len, average_len

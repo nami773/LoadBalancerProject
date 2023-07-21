@@ -1,3 +1,7 @@
+from prettytable import PrettyTable
+import RoundRobin
+import numpy as np
+
 class RoundRobin:
     def __init__(self, arrival_times, service_times, m):
         self.arrival_times = arrival_times
@@ -65,3 +69,21 @@ class RoundRobin:
             queues[server].append(i)
         average_len /= size
         return wait_times, system_times, departure_times, selected, max_len, average_len
+
+service_times = [1, 2, 1, 2, 5, 11, 1, 1, 22, 1]
+arrival_times = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+m = 2
+x = PrettyTable()
+round_robin = RoundRobin.RoundRobin(arrival_times, service_times, m)
+customer_nums = [i+1 for i in range(len(service_times))]
+selected_q = [i+1 for i in selected]
+wait_times, system_times, departure_times, selected, max_len, average_len = round_robin.run()
+column_names = ["Customer #", "Selected Queue", "Arrival Time", "Departure Time", "Service Time", "Wait Time", "System Time"]
+data = [customer_nums, selected_q, arrival_times, departure_times, service_times, wait_times, system_times]
+length = len(column_names)
+
+
+for i in range(length):
+     x.add_column(column_names[i],data[i])
+
+print(x)

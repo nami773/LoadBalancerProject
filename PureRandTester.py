@@ -1,4 +1,8 @@
-class RoundRobin:
+from prettytable import PrettyTable
+import numpy as np
+import PureRand
+
+class PureRand:
     def __init__(self, arrival_times, service_times, m):
         self.arrival_times = arrival_times
         self.service_times = service_times
@@ -23,13 +27,7 @@ class RoundRobin:
         size = len(arrival_times)
 
         # Servers to be chosen
-        selected = []
-        s = 0
-        for i in range(size):
-            selected.append(s)
-            s += 1
-            if s == m:
-                s = 0
+        selected = [np.random.randint(0, m) for i in range(size)]
 
         # Statistics to be collected
         wait_times = []
@@ -65,3 +63,22 @@ class RoundRobin:
             queues[server].append(i)
         average_len /= size
         return wait_times, system_times, departure_times, selected, max_len, average_len
+
+
+service_times = [1, 2, 1, 2, 5, 11, 1, 1, 22, 1]
+arrival_times = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+m = 2
+x = PrettyTable()
+rand_min = PureRand.PureRand(arrival_times, service_times, m)
+customer_nums = [i+1 for i in range(len(service_times))]
+wait_times, system_times, departure_times, selected, max_len, average_len = rand_min.run()
+selected_q = [i+1 for i in selected]
+column_names = ["Customer #", "Selected Queue","Arrival Time", "Departure Time", "Service Time", "Wait Time", "System Time"]
+data = [customer_nums, selected_q, arrival_times, departure_times, service_times, wait_times, system_times]
+length = len(column_names)
+
+
+for i in range(length):
+     x.add_column(column_names[i],data[i])
+
+print(x)
